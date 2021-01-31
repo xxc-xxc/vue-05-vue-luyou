@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- 1.导入js文件 -->
+    <script src="./js/vue.js"></script>
+    <script src="js/vue-router.js"></script>
+    <script src="js/axios.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 
+            2.添加路由链接：
+            <router-link>是路由中提供的标签，默认会被渲染为a标签，
+            to属性默认被渲染为href属性，
+            to属性的值会被渲染为#开头的hash地址
+        -->
+        <router-link to="/user">User</router-link>
+        <router-link to="/login">Login</router-link>
+        <!-- 3.路由占位符 -->
+        <router-view></router-view>
+    </div>
+    <script>
+        /* 4.定义路由组件 */
+        const User = { template: "<div>This is User</div>" }
+        const Login = { template: "<div>This is Login</div>" }
+
+        /* 5.配置路由规则 */
+        const router = new VueRouter({
+            routes: [
+                // 每一个路由规则都是一个对象，对象中至少包含path和component两个属性
+                // path：路由匹配的hash地址，component：路由规则对应要展示的组件对象
+                /* 
+                    路由重定向：可以通过路由重定向为页面设置默认展示的组件
+                */
+
+                {path: "/", redirect: "/user"}
+                {path: "/user", component: User},
+                {path: "/login", component: Login},
+            ]
+        })
+        let vm = new Vue({
+            el: '#app',
+            data: {
+
+            },
+            methods: {
+
+            },
+            // 6.将路由挂载到Vue实例上
+            router: router
+        });
+    </script>
+</body>
+
+</html>
