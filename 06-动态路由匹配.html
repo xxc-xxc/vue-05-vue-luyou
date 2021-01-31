@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./js/vue.js"></script>
+    <script src="./js/vue-router.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 
+            2.添加路由链接：
+            <router-link>是路由中提供的标签，默认会被渲染为a标签，
+            to属性默认被渲染为href属性，
+            to属性的值会被渲染为#开头的hash地址
+        -->
+        <router-link to="/user/1">User1</router-link>
+        <router-link to="/user/2">User2</router-link>
+        <router-link to="/user/3">User3</router-link>
+        <router-link to="/login">Login</router-link>
+        <!-- 3.路由占位符 -->
+        <router-view></router-view>
+    </div>
+    <script>
+        /* 
+            嵌套路由：
+                当进行路由时显示的组件还有新的子级路由链接以及内容。
+                如/login路由下的子级路由：
+                    /login/account
+                    /login/phone
+        */
+
+        /* 如果使用$route.params.id来获取路径传参的数据不够灵活 */
+        /* 1.可以通过props来接收参数 */
+        /* 2.将props设置为对象，可以直接将对象数据传递给组件使用 */
+        /* 3.如果想要获取传递的参数和获取传递的对象数据，那么props应该设置为函数形式 */
+
+        // 定义路由
+        const User = {
+            // props: ["id"],
+            // props: ["username", "pwd"],
+            props: ["username", "pwd", "id"],
+            // template: "<div>用户：{{$route.params.id}}</div>"
+            // template: "<div>用户：{{id}}</div>"
+            template: "<div>用户：{{id}} --- {{username}} --- {{pwd}}</div>"
+        }
+        // Login组件中的模板代码里面包含了子级路由链接以及子级路由占位符
+        const Login = {
+            template: `
+                <div>
+                    <h1>This is Login</h1>
+                    <hr>
+                    <router-link to="/login/account">账号密码登录</router-link>
+                    <router-link to="/login/phone">扫码登录</router-link>
+                    <!-- 子路由组件将会在router-view中显示 -->
+                    <router-view></router-view>
+                </div>
+            `,
+        }
+
+        const Account = {template:"<div>账号：<input><br>密码：<input></div>"}
+        const Phone = {template:"<h1>扫我二维码</h1>"}
+
+        const router = new VueRouter({
+            // routes是路由规则数组
+            routes: [
+                {path: "/", redirect: "/user"},
+                // {path: "/user/:id", component: User, props: true},
+                // {path: "/user/:id", component: User, props: {username: "xxc", pwd: "密码"}},
+                {
+                    // 通过/:参数名 的形式传递参数
+                    // 如果props设置为函数，则通过函数的第一个参数获取路由对象
+                    // 并可以通过路由对象的params属性获取传递的参数
+                    path: "/user/:id", 
+                    component: User, 
+                    props: (route) => {
+                        return {
+                            username: "xiaoyingxin",
+                            pwd: "密码",
+                            id: route.params.id,
+                        }
+                    }
+                },
+                {
+                    path: "/login", 
+                    component: Login,
+                    children: [
+                        {path: "/login/account", component: Account},
+                        {path: "/login/phone", component: Phone},
+                    ]
+                },
+            ]
+        })
+        let vm=new Vue({
+           el:'#app',
+           data:{
+
+           },
+           methods:{
+
+           },
+           router: router
+        });
+    </script>
+</body>
+
+</html>
