@@ -183,12 +183,34 @@
                     <td>{{item.id}}</td>
                     <td>{{item.name}}</td>
                     <td>{{item.age}}</td>
-                    <td><a href="javascript:;">详情</a></td>
+                    <td><a href="javascript:;" @click="goDetail(item.id)">详情</a></td>
                 </tr>
             </tbody>
           </table>
         </div>
       `,
+      methods: {
+        goDetail(id) {
+          this.$router.push("/userinfo/" + id);
+        }
+      },
+    }
+    // 用户详情子组件
+    const UserInfo = {
+      props: ["id"],
+      template: `
+        <div>
+          <h5>用户详情</h5>
+          <p>查看 {{id}} 号用户信息</p>
+          <button @click="goBack">返回用户详情页</button>
+        </div>
+      `,
+      methods: {
+        goBack() {
+          //当用户点击按钮，后退一页
+          this.$router.go(-1);
+        }
+      }
     }
     const Access = {
       template: `
@@ -225,6 +247,7 @@
         {
           path: "/", component: app, children: [
             { path: "/users", component: Users },
+            { path: "/userinfo/:id", component: UserInfo, props: true },
             { path: "/accesses", component: Access },
             { path: "/goods", component: Goods },
             { path: "/orders", component: Orders },
